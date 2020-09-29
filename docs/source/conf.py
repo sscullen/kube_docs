@@ -46,10 +46,15 @@ autosectionlabel_maxdepth = 4
 
 mermaid_params = ['--theme', 'forest', '--width', '600', '--backgroundColor', 'transparent']
 
-rinoh_documents = [('index',            # top-level file (index.rst)
-                    'target',           # output (target.pdf)
+mermaid_cmd = "C:\\Users\\shaun\\Development\\kube_docs\\node_modules\\.bin\\mmdc.cmd"
+
+mermaid_output_format = "png"
+
+latex_documents = [('index',            # top-level file (index.rst)
+                    f"kube_docs_{release.replace('.', '_')}",           # output (target.pdf)
                     'Kube Docs',   # document title
-                    'Shaun Cullen')]   # document author
+                    'Shaun Cullen',
+                    "manual")]   # document author
 
 html_theme_options = {
     'navigation_depth': 4,

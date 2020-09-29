@@ -265,7 +265,7 @@ The persistent volume is a NFS share that we have access to inside the cluster a
 API
 ===
 
-The Nodeport service means our API is accessible on port 30199 on the node hostnames and IP addresses. The end point is /agricarta/preprocessing, it supports the POST HTTP method, and the processing parameters are JSON data that you include with the post request.
+The Nodeport service means our API is accessible on port `30199` on the node through the nodes' hostnames or IP addresses. The end point is `/agricarta/preprocessing`, it supports the POST HTTP method, and the processing parameters are JSON data that you include with the POST request.
 
 .. code:: JSON
 
@@ -287,3 +287,178 @@ Data Management and Access
 ==========================
 
 Because we have access to the NFS share with the imagery we are using, we can use the NFS share to host the preprocessing results. Thus the results are acessible on the NFS share and the S3 Minio instance that NFS share is also backing.
+
+Flask wrapper
+=============
+
+`server.py` is a Flask web server instance that we use to control our application. We run the server in our container with the command `flask run --host 0.0.0.0` as seen above in our deployment definition.
+
+.. code:: python
+
+    from flask import Flask, request
+
+    import uuid
+
+    import subprocess
+
+    app = Flask(__name__)
+
+    @app.route("/")
+    def hello():
+        return "Hello, World!"
+
+    @app.route('/agricarta/preprocessing', methods=['POST'])
+    def login():
+        if request.method == 'POST':
+            json = request.get_json()
+            print(json)
+
+            job_id = uuid.uuid4()
+            
+            # example sub process command
+            # python3.7 server_preprocessing.py 
+            # LC08_L1TP_042025_20200624_20200707_01_T1 LC08_L1TP_042026_20200624_20200707_01_T1 /code/workingdir config.yaml UNIQUEJOBID 10 4 True
+            result = subprocess.Popen(["python3.7", 
+                                        "server_preprocessing.py", 
+                                        *json["imagery_list"], 
+                                        "/code/workingdir", 
+                                        "config.yaml", 
+                                        str(job_id), 
+                                        str(json["resolution"]),
+                                        str(json["cores"]),
+                                        str(json["delete_intermediate"])])
+
+        # the code below is executed if the request method
+        # was GET or the credentials were invalid
+        return str(job_id)
+
+Preprocessing Wrapper
+=====================
+
+We need to create a preprocessing wrapper that calls the Agricarta preprocessing module which accepts command line args and can read our general `config.yaml` configuration file.
+
+`preprocessing_server.py` is similar to the 1_preprocessing.py executor.
+
+.. code:: python
+
+    import click
+    import logging
+    import yaml
+    from pathlib import Path
+    import os
+    import shutil
+    import tarfile
+
+    import agricarta as ag
+    from utilities.common import ConfigFileProblem, ConfigValueMissing
+
+    REQUIRED_CONFIG_KEYS = [
+            "ROOT_DIR",
+            "IMAGERY_STORAGE",
+            "DEPENDENCIES_DIR",
+            "SRTM_DIR",
+            "LOGGING_CONFIG",
+            "PROJECTION",
+            "PARAMS",
+        ]
+
+    @click.command()
+    @click.argument('imagery_names', nargs=-1)
+    @click.argument('working_dir', type=click.Path(exists=True))
+    @click.argument('config', type=click.Path(exists=True))
+    @click.argument('job_id')
+    @click.argument('resolution')
+    @click.argument('cores')
+    @click.argument('delete_intermediate')
+    def start(imagery_names, working_dir, config, resolution, job_id, delete_intermediate=True, cores=4):
+        job_result_log = []
+
+        # Load config from config.yaml
+        try:
+            with open(config, "r") as stream:
+                config = yaml.safe_load(stream)
+        except yaml.YAMLError as e:
+            logging.error("Problem loading config... exiting...")
+            job_result_log.append("Problem loading config")
+        except FileNotFoundError as e:
+            logging.error(f"Missing config file with path {args.config}")
+            job_result_log.append("Missing config file")
+        except BaseException as e:
+            logging.error("Unknown problem occurred while loading config")
+            job_result_log.append("Problem occurred while loading config")
+        
+        job_result_log.append(f"Imagery names: {','.join(imagery_names)}")
+        job_result_log.append(f"Job id: {job_id}")
+        job_result_log.append(f"Working dir: {working_dir}")
+        job_result_log.append(f"Resolution: {resolution}")
+        job_result_log.append(f"Delete intermediate: {delete_intermediate}")
+        job_result_log.append(f"Cores: {cores}")
+
+        JOB_DIR = Path(working_dir, job_id)
+        IMAGERY_DIR = Path(JOB_DIR, 'imagery')
+        OUTPUT_DIR = Path(JOB_DIR, 'output')
+
+        os.mkdir(JOB_DIR)
+        os.mkdir(IMAGERY_DIR)
+        os.mkdir(OUTPUT_DIR)
+
+        # Before this is called, make sure all the appropriate folders are created based on the job id 
+        # 1. Create 'imagery' dir, 'output_dir', inside 'job_id' dir
+        # 2. Copy image from imagery storage based on the image type
+        # 3. Once all imagery is found, run the preprocessing module
+
+        for image in imagery_names:
+            # Determine image type
+            if image.startswith('LC08'):
+                print('Landsat image')
+                pathrow = image.split('_')[2]
+                path = pathrow[0:3]
+                row = pathrow[3:6]
+                image_path = Path(config['IMAGERY_STORAGE'], "l8-l2a-products", "tiles", path, row, image)
+
+                if image_path.exists():
+                    print('Image exists')
+                    job_result_log.append(f"Image: {image} FOUND")
+                    shutil.copytree(image_path, Path(IMAGERY_DIR, image))
+                    print("Image copied")
+                    job_result_log.append(f"Image: {image} COPIED")
+                    with tarfile.open(Path(IMAGERY_DIR, image + '.tar.gz'), "w:gz") as tar:
+                        tar.add(Path(IMAGERY_DIR, image), arcname='.')
+                else:
+                    print("imagery not found")
+                    job_result_log.append(f"Image: {image} NOT FOUND")
+
+        try:
+            job_result_log.append('Preprocessing started')
+            ag.preprocessing.process_multiple_images([str(IMAGERY_DIR)],
+                                                    str(Path(OUTPUT_DIR, "preprocess")),
+                                                    str(Path(OUTPUT_DIR, "metadata")),
+                                                    params=config['PARAMS'],
+                                                    output_projection=config['PROJECTION'],
+                                                    output_resolution=int(resolution),
+                                                    align_origin=True,
+                                                    srtm_path=config['SRTM_DIR'],
+                                                    required_datasets=config['DEPENDENCIES_DIR'],
+                                                    delete_intermediate=delete_intermediate,
+                                                    log_config=None,
+                                                    ncores=int(cores)
+            )        
+        except BaseException as e:
+
+            logging.error('|       EXCEPTION      |: Encountered a generic exception at preprocessing task '
+                        'scheduler. Details: {}'.format(e))
+            job_result_log.append("Exception occured, preprocessing failed")
+            job_result_log.append(str(e))
+
+        else:
+            job_result_log.append("Preprocessing finished")
+        
+        with open(Path(JOB_DIR, "job_log.txt"), "w") as outfile:
+            outfile.write("\n".join(job_result_log))
+
+        shutil.rmtree(IMAGERY_DIR)
+
+        shutil.copytree(JOB_DIR, Path(config["IMAGERY_STORAGE"], "agricarta", "preprocessing", job_id))
+
+    if __name__ == "__main__":
+        start()
