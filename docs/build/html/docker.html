@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Docker &mdash; Kube Docs 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Kubernetes" href="kubernetes.html" />
+    <link rel="prev" title="Welcome to Kube Docs’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Kube Docs
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Docker</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dockerfile-build-your-container-image">Dockerfile: Build Your Container Image</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installing-pip-packages-directly-from-github">Installing <code class="code docutils literal notranslate"><span class="pre">pip</span></code> Packages Directly from Github</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exposing-your-service-s-ports">Exposing Your Service’s Ports</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#build-your-image">Build Your Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-development-inside-the-container">Local Development Inside the Container</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-the-container">Accessing the Container</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mounting-volumes-inside-the-container">Mounting Volumes Inside the Container</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-private-registry">Docker Private Registry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#useful-docker-private-registry-url-endpoints">Useful Docker Private Registry URL Endpoints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#other-useful-docker-cli-commands">Other Useful Docker CLI Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="kubernetes.html">Kubernetes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example1-agricartapreprocessing.html">Example 1 - Simple - Agricarta Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example2-landsatdownloaderservice.html">Example 2 - Simple - Landsat Downloader Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example3-datacube.html">Example 3 - Complex - Datacube</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example4-tileviewerapi.html">Example 4 - Complex - Tile Viewer API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Kube Docs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Docker</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/docker.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="docker">
+<h1><a class="toc-backref" href="#id1">Docker</a><a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h1>
+<p>Containers are the basic building block for machine independent cloud based computing. Kubernetes is a container orchestrator, allowing your application and its dependencies to be deployed independent of any given machine or architecture. Docker is the most common method for creating containers. We will go over the most useful methods for creating a Docker container for your application, which we will eventually be deploying to a Kubernetes cluster.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#docker" id="id1">Docker</a></p>
+<ul>
+<li><p><a class="reference internal" href="#dockerfile-build-your-container-image" id="id2">Dockerfile: Build Your Container Image</a></p>
+<ul>
+<li><p><a class="reference internal" href="#installing-pip-packages-directly-from-github" id="id3">Installing <code class="code docutils literal notranslate"><span class="pre">pip</span></code> Packages Directly from Github</a></p></li>
+<li><p><a class="reference internal" href="#exposing-your-service-s-ports" id="id4">Exposing Your Service’s Ports</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#build-your-image" id="id5">Build Your Image</a></p></li>
+<li><p><a class="reference internal" href="#local-development-inside-the-container" id="id6">Local Development Inside the Container</a></p>
+<ul>
+<li><p><a class="reference internal" href="#accessing-the-container" id="id7">Accessing the Container</a></p></li>
+<li><p><a class="reference internal" href="#mounting-volumes-inside-the-container" id="id8">Mounting Volumes Inside the Container</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#docker-private-registry" id="id9">Docker Private Registry</a></p>
+<ul>
+<li><p><a class="reference internal" href="#useful-docker-private-registry-url-endpoints" id="id10">Useful Docker Private Registry URL Endpoints</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#other-useful-docker-cli-commands" id="id11">Other Useful Docker CLI Commands</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="dockerfile-build-your-container-image">
+<h2><a class="toc-backref" href="#id2">Dockerfile: Build Your Container Image</a><a class="headerlink" href="#dockerfile-build-your-container-image" title="Permalink to this headline">¶</a></h2>
+<p>Dockerfiles are used to declaratively create images for Docker containers, which can be integrated into source control. This is a common theme among the dev ops topics we will be covering: finding ways to integrate configuration and deployment into the source control of your projects, so that they can be tracked and modified over time.</p>
+<p><strong>Example Dockerfile</strong></p>
+<div class="highlight-Dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">registry.cullen.io/ubuntu-base:v0.0.8</span>
+
+<span class="k">RUN</span> apt update <span class="o">&amp;&amp;</span> apt install -y nginx
+
+<span class="k">ARG</span> GITHUB_PAT
+
+<span class="k">COPY</span> ./requirements.txt /code/requirements.txt
+
+<span class="k">WORKDIR</span><span class="s"> /code</span>
+
+<span class="k">RUN</span> python3.7 -m pip install -r /code/requirements.txt
+
+<span class="k">RUN</span> python3.7 -m pip install git+https://sscullen:<span class="nv">$GITHUB_PAT</span>@<span class="se">\</span>
+github.com/sscullen/landsat_downloader.git@v0.0.4#egg<span class="o">=</span>landsat_downloader
+<span class="k">RUN</span> python3.7 -m pip install git+https://sscullen:<span class="nv">$GITHUB_PAT</span>@<span class="se">\</span>
+github.com/sscullen/sentinel_downloader.git#egg<span class="o">=</span>sentinel_downloader
+<span class="k">RUN</span> python3.7 -m pip install git+https://sscullen:<span class="nv">$GITHUB_PAT</span>@<span class="se">\</span>
+github.com/sscullen/spatial_ops.git@v0.0.2#egg<span class="o">=</span>spatial_ops
+
+<span class="k">COPY</span> . /code
+
+<span class="k">RUN</span> cp -r /code/common/grid_files/ /usr/local/lib/python3.7/dist-packages/spatial_ops <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    cp -r /code/common/data/ /usr/local/lib/python3.7/dist-packages/spatial_ops
+
+<span class="k">RUN</span> python3.7 /code/manage.py collectstatic --no-input
+
+<span class="k">COPY</span> nginx_site.txt /etc/nginx/sites-available/jobmanager
+
+<span class="k">RUN</span> ln -s /etc/nginx/sites-available/jobmanager /etc/nginx/sites-enabled/jobmanager
+
+<span class="k">EXPOSE</span><span class="s"> 80</span>
+
+<span class="k">EXPOSE</span><span class="s"> 443</span>
+
+<span class="k">EXPOSE</span><span class="s"> 5000</span>
+
+<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;gunicorn&quot;</span><span class="p">,</span> <span class="s2">&quot;--bind&quot;</span><span class="p">,</span> <span class="s2">&quot;0.0.0.0:5000&quot;</span><span class="p">,</span> <span class="s2">&quot;--log-level=debug&quot;</span><span class="p">,</span> <span class="s2">&quot;jobmanager.wsgi&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Dockerfile Keywords</strong></p>
+<dl class="simple">
+<dt><code class="code docutils literal notranslate"><span class="pre">FROM</span></code></dt><dd><p>Source image to use as a base. The foundation for your image. Often is images of popular linux distros but can also be images you have customized with other Dockerfiles, allowing for images with common requirements to be shared among many docker files. In the example above, <code class="code docutils literal notranslate"><span class="pre">ubuntu-base</span></code> has Python3 and gdal already installed.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice the URL for the docker image: this is how images are referenced and tagged for access from different docker registries, including the main docker hub. This is discussed more below in the <a class="reference internal" href="#docker-private-registry"><span class="std std-ref">private registry</span></a> section.</p>
+</div>
+<dl class="simple">
+<dt><code class="code docutils literal notranslate"><span class="pre">RUN</span></code></dt><dd><p>Run a command inside the container. Each <code class="code docutils literal notranslate"><span class="pre">RUN</span></code> command will add another “layer” (discrete change to the image that is tracked and transferred individually), and many layers will make the image large. <code class="code docutils literal notranslate"><span class="pre">RUN</span></code> commands will often be chained with <code class="code docutils literal notranslate"><span class="pre">&amp;&amp;</span></code> to reduce the image size.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can use the experimental <code class="code docutils literal notranslate"><span class="pre">--squash</span></code> feature which reduces the amount of layers in an image regardless of how many <code class="code docutils literal notranslate"><span class="pre">RUN</span></code> commands there are.</p>
+</div>
+<dl class="simple">
+<dt><code class="code docutils literal notranslate"><span class="pre">ARG</span></code></dt><dd><p>Get environment variables from your machine into the image you are building. In the example this is used for Github authentication so no login or password prompts are needed. In the <a class="reference internal" href="#build-your-image"><span class="std std-ref">build your image</span></a> section we go over the different syntaxes for Linux and Windows for using your environment variables in the image build command.</p>
+</dd>
+<dt><code class="code docutils literal notranslate"><span class="pre">COPY</span></code></dt><dd><p>Move your source files and data from your local machine into the docker container image.</p>
+</dd>
+<dt><code class="code docutils literal notranslate"><span class="pre">WORKDIR</span></code></dt><dd><p>Set the <code class="code docutils literal notranslate"><span class="pre">root</span></code> directory for the Dockerfile, where all the <code class="code docutils literal notranslate"><span class="pre">RUN</span></code> commands will be executed and where the <code class="code docutils literal notranslate"><span class="pre">COPY</span></code> commands will put the files they copy from your machine.</p>
+</dd>
+<dt><code class="code docutils literal notranslate"><span class="pre">EXPOSE</span></code></dt><dd><p>Expose the ports your application will be accessible on. For example, for an nginx docker image that is hosting web services, you will expose 443 and 80. For a Django application in development, you could use <code class="code docutils literal notranslate"><span class="pre">django</span> <span class="pre">manage.py</span> <span class="pre">runserver</span> <span class="pre">0.0.0.0:4000</span></code> to start your django instance, and in this case you would expose port 4000 to access your Django application.</p>
+</dd>
+<dt><code class="code docutils literal notranslate"><span class="pre">CMD</span></code></dt><dd><p>The command your docker container will run when it starts. For a simple Python webservice, your command would be starting the webserver application such as <code class="code docutils literal notranslate"><span class="pre">nginx</span></code> or <code class="code docutils literal notranslate"><span class="pre">gunicorn</span></code>. If you don’t want your container to run a command here, you can use <code class="code docutils literal notranslate"><span class="pre">['sleep',</span> <span class="pre">'infinity']</span></code> so the container will wait for you to interact with it before shutting down. Once the <code class="code docutils literal notranslate"><span class="pre">CMD</span></code> command finishes, the container shuts down.</p>
+</dd>
+</dl>
+<div class="section" id="installing-pip-packages-directly-from-github">
+<h3><a class="toc-backref" href="#id3">Installing <code class="code docutils literal notranslate"><span class="pre">pip</span></code> Packages Directly from Github</a><a class="headerlink" href="#installing-pip-packages-directly-from-github" title="Permalink to this headline">¶</a></h3>
+<p>In the example Dockerfile above, we have lines that look like this:</p>
+<div class="highlight-Dockerfile notranslate"><div class="highlight"><pre><span></span><span class="k">RUN</span> python3.7 -m pip install git+https://sscullen:<span class="nv">$GITHUB_PAT</span>@<span class="se">\</span>
+github.com/sscullen/landsat_downloader.git@v0.0.4#egg<span class="o">=</span>landsat_downloader
+</pre></div>
+</div>
+<p>This allows us to install pip packages directly from Github. We can specify a specific branch and tag, allowing us to make sure we are using the right package. To avoid credential issues, we use a Github Personal Access token, which can be generated from the Github general settings page for your account. This is not required for a public repo.</p>
+<p>To be a valid pip package, the repo should be structured like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">repo_root</span><span class="o">/</span>
+    <span class="n">landsat_downloader</span> <span class="c1"># &lt;-- actual python module source code</span>
+    <span class="o">.</span><span class="n">gitignore</span>
+    <span class="n">Pipfile</span> <span class="c1"># &lt;-- requirements.txt equivalent for Pipenv virtual env manager</span>
+    <span class="n">Readme</span><span class="o">.</span><span class="n">md</span>
+    <span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+    <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="c1"># &lt;-- critical file for the pip package</span>
+</pre></div>
+</div>
+<p>The <code class="code docutils literal notranslate"><span class="pre">setup.py</span></code> file is required, and contains metadata and package information. The version number in <code class="code docutils literal notranslate"><span class="pre">setup.py</span></code> should match the latest release tag for your repo.</p>
+<p><strong>Example setup.py</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span>
+
+<span class="n">setup</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;landsat_downloader&#39;</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s1">&#39;0.0.4&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Utilities for downloading Landsat and Sentinel products from USGS&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://github.com/sscullen/landsat_downloader.git&#39;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="s1">&#39;Shaun Cullen&#39;</span><span class="p">,</span>
+    <span class="n">author_email</span><span class="o">=</span><span class="s1">&#39;ss.cullen@uleth.ca&#39;</span><span class="p">,</span>
+    <span class="n">license</span><span class="o">=</span><span class="s1">&#39;MIT&#39;</span><span class="p">,</span>
+    <span class="n">packages</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;landsat_downloader&#39;</span><span class="p">],</span>
+    <span class="n">zip_safe</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Pip will use <code class="code docutils literal notranslate"><span class="pre">setup.py</span></code> to build the <code class="code docutils literal notranslate"><span class="pre">.whl</span></code> package from your repo directly from your source code in the repo. This is important because it makes sure the version of the code we are using is up to date and correct. If we aren’t doing active development on a project and only installing it as a dependency, then it is best to install in this way, rather than copying source code using a <code class="code docutils literal notranslate"><span class="pre">COPY</span></code> command. If we are actively changing the code on our local machine, the <code class="code docutils literal notranslate"><span class="pre">COPY</span></code> command makes more sense.</p>
+</div>
+<div class="section" id="exposing-your-service-s-ports">
+<h3><a class="toc-backref" href="#id4">Exposing Your Service’s Ports</a><a class="headerlink" href="#exposing-your-service-s-ports" title="Permalink to this headline">¶</a></h3>
+<p>Using the <code class="code docutils literal notranslate"><span class="pre">EXPOSE</span></code> directive is how you make your docker container service accessible to the outside world. This is also a critical concept in how Kubernetes exposes services from containers to the outside world. While it is possible to mount local volumes and interact directly inside your container, thus bypassing the “service” model employed by exposing ports for APIs and such, it is not a good idea to use Docker containers in this way. Even modest containers should have some sort of network service exposed for interacting with your application.</p>
+<p>Live interaction and intervention by a user in your container results in ephemeral changes to your container that are not maintained after the container restarts. In this vein, we should strive to make containers as “stateless” as possible, and move all data “persistence” requirements into dedicated data focused containers and services, which are designed with persistence in mind. More on this will be in the <a class="reference internal" href="kubernetes.html#persistent-volumes-and-claims"><span class="std std-ref">Kubernetes section</span></a> on persistence.</p>
+</div>
+</div>
+<div class="section" id="build-your-image">
+<h2><a class="toc-backref" href="#id5">Build Your Image</a><a class="headerlink" href="#build-your-image" title="Permalink to this headline">¶</a></h2>
+<p>Once you have your Dockerfile ready, you need to build the image. You do this by using the Docker CLI <code class="code docutils literal notranslate"><span class="pre">build</span></code> command.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker build -f Dockerfile -t ubuntu_base:ver8 .
+</pre></div>
+</div>
+<p>The above command specifies the Dockerfile with <code class="code docutils literal notranslate"><span class="pre">-f</span></code> and the tag for the image with <code class="code docutils literal notranslate"><span class="pre">-t</span></code>. Lastly, the <code class="code docutils literal notranslate"><span class="pre">.</span></code> represents the directory to run the command in, so in that case it is your present working directory. A more complex build command where you passing command line args to be used by the <code class="code docutils literal notranslate"><span class="pre">ARG</span></code> directive in your Dockerfile would look like this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker build --build-arg <span class="nv">GITHUB_PAT</span><span class="o">=</span><span class="si">${</span><span class="nv">GITHUB_PAT</span><span class="si">}</span> -f Dockerfile.django -t jobmanager-api:ver1 . --squash --no-cache
+</pre></div>
+</div>
+<p>This command specifies the GITHUB_PAT <code class="code docutils literal notranslate"><span class="pre">ARG</span></code> using BASH var substitution, on Windows with Powershell you would do <code class="code docutils literal notranslate"><span class="pre">GITHUB_PAT=$env:GITHUB_PAT</span></code>. In either case, you are transferring env vars from your local machine into the container to be used during the build process. <code class="code docutils literal notranslate"><span class="pre">--squash</span></code> collapses the layers of the docker image to keep the image small, and <code class="code docutils literal notranslate"><span class="pre">--no-cache</span></code> will prevent the build process from using previous built layers. Caching will speed up the build process but it is sometimes nice to build the entire Dockerfile to make sure no issues have occurred since your last build.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code class="code docutils literal notranslate"><span class="pre">--squash</span></code> is an experimental feature of Docker. To enable experimental features, edit the <code class="code docutils literal notranslate"><span class="pre">/etc/docker/daemon.json</span></code> file and add <code class="code docutils literal notranslate"><span class="pre">&quot;experimental&quot;:</span> <span class="pre">true</span></code>. On Windows, edit the Docker Desktop settings, go to Docker Engine, and edit the json there.</p>
+</div>
+<p>If the build process completes successfully, you can list the current images on your machine with <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">images</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ docker images
+REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
+example                                 v0.0.1              e22f3bdb392b        <span class="m">9</span> hours ago         <span class="m">1</span>.09GB
+</pre></div>
+</div>
+<p>You can see the image id, tag, and size of the images. Image IDs are useful for having concrete references to your images.</p>
+</div>
+<div class="section" id="local-development-inside-the-container">
+<h2><a class="toc-backref" href="#id6">Local Development Inside the Container</a><a class="headerlink" href="#local-development-inside-the-container" title="Permalink to this headline">¶</a></h2>
+<p>Once we have built the image, we want to work with it, test it locally, and make sure it is working properly. We run images with the <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">run</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -td -p <span class="m">5001</span>:5000 -e <span class="nv">DEVELOPMENT</span><span class="o">=</span>True -v /home/common/Development/job_manager/:/code -v /mnt/drobos/zeus/:/mnt/zeusdrobo zeus684440.agr.gc.ca/jobmanager-api:v0.0.9 bash
+</pre></div>
+</div>
+<p>If the run command is successful, you will see a random string of characters.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">-td</span></code> is telling Docker to run the image in a detached terminal, so that you can access it and disconnect from the container and it will stay running.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">-p</span></code> defines port mapping from the container to your local machine, so for <code class="code docutils literal notranslate"><span class="pre">-p</span> <span class="pre">5001:5000</span></code>, 5000 is the container port, and 5001 is the local machine port. You can then access the service running on your docker container at <code class="code docutils literal notranslate"><span class="pre">localhost:5001</span></code> on your machine. Remember that we <code class="code docutils literal notranslate"><span class="pre">EXPOSE</span></code> port 5000 in the Dockerfile previously.</p>
+<p><code class="code docutils literal notranslate"><span class="pre">-e</span></code> is for defining environment variables, here we are setting <code class="code docutils literal notranslate"><span class="pre">DEVELOPMENT</span></code> to be <code class="code docutils literal notranslate"><span class="pre">True</span></code></p>
+<p><code class="code docutils literal notranslate"><span class="pre">-v</span></code> is for mapping local directories on your machine to directories inside the container. Here we map the source code directory so we can make changes to the code on our machine and those changes will appear inside the container. We also mount another volume for data. Similar to the port mapping, the first entry before the <code class="code docutils literal notranslate"><span class="pre">:</span></code> is the local machine, and the second entry is the container’s directory.</p>
+<p>The URL with the image tag is the full URL for the image. We will go over this in the <a class="reference internal" href="#docker-private-registry"><span class="std std-ref">private registry section</span></a> but just remember we don’t need the registry URL in the image tag unless we are pushing and pulling from the registry.</p>
+<p>Finally we have the command we want to run when we connect to the container, in this case we are running a <code class="code docutils literal notranslate"><span class="pre">bash</span></code> shell to interact with the container, but in other more stripped down images you might only have access to the <code class="code docutils literal notranslate"><span class="pre">sh</span></code> shell.</p>
+<div class="section" id="accessing-the-container">
+<h3><a class="toc-backref" href="#id7">Accessing the Container</a><a class="headerlink" href="#accessing-the-container" title="Permalink to this headline">¶</a></h3>
+<p>We can verify the container is running with the <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker ps
+CONTAINER ID        IMAGE                    COMMAND             CREATED             STATUS              PORTS                                     NAMES
+c8075244d8a9        jobmanager-api:v0.0.24   <span class="s2">&quot;bash&quot;</span>              <span class="m">5</span> days ago          Up <span class="m">5</span> days           <span class="m">80</span>/tcp, <span class="m">443</span>/tcp, <span class="m">0</span>.0.0.0:5001-&gt;5000/tcp   sad_thompson
+</pre></div>
+</div>
+<p>The container short name is <code class="code docutils literal notranslate"><span class="pre">sad_thompson</span></code> in this example, it is randomly generated each time you run the container. Once you know the name of the container, you can access it with an <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">exec</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> -it sad_thompson bash
+</pre></div>
+</div>
+<p>Here we are saying give me an interactive terminal for the container and run the command <code class="code docutils literal notranslate"><span class="pre">bash</span></code>, this will leave us at a terminal inside the container. From there we can run commands for our application. <code class="code docutils literal notranslate"><span class="pre">exit</span></code> will return us to our host machine.</p>
+<p>When we are finished with the container, we can stop it from running with <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">kill</span> <span class="pre">sad_thompson</span></code>, and we can check if any containers are still running again by using the <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">ps</span></code> command.</p>
+</div>
+<div class="section" id="mounting-volumes-inside-the-container">
+<h3><a class="toc-backref" href="#id8">Mounting Volumes Inside the Container</a><a class="headerlink" href="#mounting-volumes-inside-the-container" title="Permalink to this headline">¶</a></h3>
+<p>Mounting volumes inside the container is an important concept, useful for local development and getting data to and from the container, but also for Kubernetes, as that is the primary mechanism for getting configuration files into the the containers, in addition to adding persistence to the containers through volume mounts.</p>
+<p>Once you are happy with the image created by the Dockerfile, and you have updated your code while developing inside the Docker container, and you are happy with those code changes, you will need to build your image one more time. After you do this build, you must tag the image with the full URL of the docker registry you want to use.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker images
+REPOSITORY                              TAG                 IMAGE ID            CREATED             SIZE
+example                                 v0.0.1              e22f3bdb392b        <span class="m">9</span> hours ago         <span class="m">1</span>.09GB
+docker tag e22f3bdb392b registry.cullen.io/example_image:v0.0.1
+</pre></div>
+</div>
+<p>The format for the image tag is &lt;docker registry url&gt;/&lt;image name&gt;:&lt;semantic version tag&gt;, the docker registry URL is used to differentiate which registry the image should be pushed to.</p>
+<p>Once you have tagged the image, you push it with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker push registry.cullen.io/example_image:v0.0.1
+</pre></div>
+</div>
+<p>You’ll also need to make sure that you login to the registry first using the command <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">login</span> <span class="pre">registry.cullen.io</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are setting up your own docker registry and it is not secured with HTTPS, you will need to add it as an insecure registry in the <code class="code docutils literal notranslate"><span class="pre">/etc/docker/daemon.json</span></code> file by adding <code class="code docutils literal notranslate"><span class="pre">&quot;insecure-registries&quot;</span> <span class="pre">:</span> <span class="pre">[&quot;myregistrydomain.com:5000&quot;]</span></code>, in a similar way that you enabled support for experimental features.</p>
+</div>
+</div>
+</div>
+<div class="section" id="docker-private-registry">
+<h2><a class="toc-backref" href="#id9">Docker Private Registry</a><a class="headerlink" href="#docker-private-registry" title="Permalink to this headline">¶</a></h2>
+<p>If you have a lot of your own images and don’t want to pay for an account on the Docker hub, you can set up your own registry. Digital Ocean has a <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-ubuntu-18-04">great tutorial</a>, and you can also set up a docker <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-set-up-a-private-docker-registry-on-top-of-digitalocean-spaces-and-use-it-with-digitalocean-kubernetes">registry on your Kubernetes cluster</a> using Helm and an Ingress secured with a Let’s Encrypt cert.</p>
+<p>You pull images with the <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">pull</span> <span class="pre">&lt;full</span> <span class="pre">image</span> <span class="pre">url&gt;</span></code> command and push images with <code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">push</span> <span class="pre">&lt;full</span> <span class="pre">image</span> <span class="pre">url&gt;</span></code> command.</p>
+<p>The current private registry on the bare metal cluster is located at <code class="code docutils literal notranslate"><span class="pre">registry.kub-eo.agr.gc.ca</span></code>.</p>
+<div class="section" id="useful-docker-private-registry-url-endpoints">
+<h3><a class="toc-backref" href="#id10">Useful Docker Private Registry URL Endpoints</a><a class="headerlink" href="#useful-docker-private-registry-url-endpoints" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt><code class="code docutils literal notranslate"><span class="pre">/v2/catalog</span></code></dt><dd><p>View available images.</p>
+</dd>
+<dt><code class="code docutils literal notranslate"><span class="pre">/v2/&lt;image_name&gt;/tags/list</span></code></dt><dd><p>View available tags for a given image.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="other-useful-docker-cli-commands">
+<h2><a class="toc-backref" href="#id11">Other Useful Docker CLI Commands</a><a class="headerlink" href="#other-useful-docker-cli-commands" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt><code class="code docutils literal notranslate"><span class="pre">docker</span> <span class="pre">rmi</span> <span class="pre">&lt;image_id&gt;</span></code></dt><dd><p>Remove an image.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kubernetes.html" class="btn btn-neutral float-right" title="Kubernetes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Kube Docs’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Shaun Cullen
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
