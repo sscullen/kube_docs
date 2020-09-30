@@ -286,7 +286,7 @@ We can use Postman to test our API.
 Data Management and Access
 ==========================
 
-Because we have access to the NFS share with the imagery we are using, we can use the NFS share to host the preprocessing results. Thus the results are acessible on the NFS share and the S3 Minio instance that NFS share is also backing.
+Because we have access to the NFS share with the imagery we are using, we can use the NFS share to host the preprocessing results. Thus the results are accessible on the NFS share and the S3 Minio instance that NFS share is also backing.
 
 Flask wrapper
 =============
