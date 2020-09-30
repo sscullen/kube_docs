@@ -1,2 +1,3 @@
-docs/build/
+docs/build/doctrees/
+docs/build/latex/
 node_modules/
