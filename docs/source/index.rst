@@ -17,6 +17,11 @@ Welcome to Kube Docs's documentation!
    example3-datacube
    example4-tileviewerapi
 
+PDF Version
+-----------
+
+`View and download the pdf version here <http://sscullen.github.io/kube_docs/kube_docs_0_0_1.pdf>`_
+
 
 
 Indices and tables
